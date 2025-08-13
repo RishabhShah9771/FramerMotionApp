@@ -1,24 +1,52 @@
-import { Link } from 'react-router-dom';
-
-import cityImg from '../assets/city.jpg';
-import heroImg from '../assets/hero.png';
+import { Link } from "react-router-dom";
+import { motion, scale, useScroll, useTransform } from "framer-motion";
+import cityImg from "../assets/city.jpg";
+import heroImg from "../assets/hero.png";
 
 export default function WelcomePage() {
+  const { scrollY } = useScroll();
+  const yCity = useTransform(scrollY, [0, 200], [0, -100]);
+  const opacityCity = useTransform(
+    scrollY,
+    [0, 150, 300, 450, 600], // More fine-grained scroll breakpoints for smoother transitions
+    [1, 0.8, 0.5, 0.2, 0] // Corresponding opacity values for gradual fading effect
+  );
+
+  const yHero = useTransform(scrollY, [0, 250], [0, -150]);
+  // Slightly extended scroll range for smoother upward movement
+
+  const opacityHero = useTransform(scrollY, [0, 300, 450, 600], [1, 1, 0.5, 0]);
+  // Added intermediate steps to fade out gradually
+
+  const yText = useTransform(scrollY, [0, 200, 350, 600], [0, 50, 100, 300]);
+  // Added more breakpoints to make vertical movement smoother and progressive
+
+  const scaleText = useTransform(scrollY, [0, 250, 400], [1, 1.3, 1.5]);
+  // Added intermediate scale for smoother scale-up effect
   return (
     <>
       <header id="welcome-header">
-        <div id="welcome-header-content">
+        <motion.div
+          id="welcome-header-content"
+          style={{ scale: scaleText, y: yText }}
+        >
           <h1>Ready for a challenge?</h1>
           <Link id="cta-link" to="/challenges">
             Get Started
           </Link>
-        </div>
-        <img
+        </motion.div>
+        <motion.img
+          style={{ opacity: opacityCity, y: yCity }}
           src={cityImg}
           alt="A city skyline touched by sunlight"
           id="city-image"
         />
-        <img src={heroImg} alt="A superhero wearing a cape" id="hero-image" />
+        <motion.img
+          style={{ y: yHero, opacity: opacityHero }}
+          src={heroImg}
+          alt="A superhero wearing a cape"
+          id="hero-image"
+        />
       </header>
       <main id="welcome-content">
         <section>
